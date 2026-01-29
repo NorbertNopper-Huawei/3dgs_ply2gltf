@@ -59,7 +59,7 @@ Please make sure, that the given dependencies are fulfilled and your toolchain d
 
 #### 3DGS glTF extensions
 
-- https://github.com/KhronosGroup/glTF/pull/2490
+- https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_gaussian_splatting
 
 #### 3DGS PLY Format
 
