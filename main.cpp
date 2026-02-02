@@ -41,7 +41,7 @@ constexpr double d3_neg90[7][7] = {
     { 0.f, 0.f, 0.f, 0.f, -0.96824584f, 0.f, 0.25f  }
 };
 
-std::vector<float> rotateSH_XAxisPos90(const float* coefficients, std::uint32_t l)
+std::vector<float> rotateSH_XAxisNeg90(const float* coefficients, std::uint32_t l)
 {
     std::vector<float> result{};
     
@@ -741,9 +741,9 @@ int main(int argc, char* argv[])
             if (convert)
             {
                 // Rotate the spherical harmonics as well by -90 degrees around x-axis with optimized Wigner d-Matrix.
-                r = rotateSH_XAxisPos90(r.data(), l);
-                g = rotateSH_XAxisPos90(g.data(), l);
-                b = rotateSH_XAxisPos90(b.data(), l);
+                r = rotateSH_XAxisNeg90(r.data(), l);
+                g = rotateSH_XAxisNeg90(g.data(), l);
+                b = rotateSH_XAxisNeg90(b.data(), l);
             }
 
             std::uint32_t band_offset{0u};
