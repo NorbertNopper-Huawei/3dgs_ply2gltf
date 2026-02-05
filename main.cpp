@@ -1,6 +1,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
 #include <limits>
 #include <sstream>
 #include <string>
@@ -433,7 +434,11 @@ int main(int argc, char* argv[])
         }
         else if (line.find("element vertex") != std::string::npos)
         {
+#ifdef _WIN32
             auto result = sscanf_s(line.c_str(), "element vertex %u", &count);
+#else
+            auto result = std::sscanf(line.c_str(), "element vertex %u", &count);
+#endif
             if (result < 0)
             {
                 return -1;
@@ -448,7 +453,11 @@ int main(int argc, char* argv[])
             char componentType[256u];
             char name[256u];
 
+#ifdef _WIN32
             auto result = sscanf_s(line.c_str(), "property %s %s", componentType, 256u, name, 256u);
+#else
+            auto result = std::sscanf(line.c_str(), "property %255s %255s", componentType, name);
+#endif
             if (result < 0)
             {
                 return -1;
@@ -638,7 +647,7 @@ int main(int argc, char* argv[])
             float z{sourceData[3u]}; 
 
             // Also normalize it, as not given by PLY.
-            float norm = std::sqrtf(x*x + y*y + z*z + w*w);
+            float norm = std::sqrt(x*x + y*y + z*z + w*w);
             if (norm == 0.0f)
             {
                 printf("Error: Invalid quaternion\n");
@@ -696,7 +705,7 @@ int main(int argc, char* argv[])
 
             // Sigmoid function needs to be applied before storing.
             const float opacity = *sourceData;
-            *data = 1.0f / (1.0f + std::expf(-opacity));
+            *data = 1.0f / (1.0f + std::exp(-opacity));
 
             byteOffset += 1u * sizeof(float);
         }

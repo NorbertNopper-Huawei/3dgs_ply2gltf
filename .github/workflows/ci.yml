@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: ply2gltf-ubuntu
+            binary_path: build/ply2gltf
+          - os: macos-latest
+            artifact_name: ply2gltf-macos
+            binary_path: build/ply2gltf
+          - os: windows-latest
+            artifact_name: ply2gltf-windows
+            binary_path: build/Release/ply2gltf.exe
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Configure (macOS)
+        if: matrix.os == 'macos-latest'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Configure (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -A x64
+
+      - name: Build (Linux / macOS)
+        if: matrix.os != 'windows-latest'
+        run: cmake --build build --config Release
+
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake --build build --config Release
+
+      - name: Run (Linux / macOS)
+        if: matrix.os != 'windows-latest'
+        run: ./build/ply2gltf
+
+      - name: Run (Windows)
+        if: matrix.os == 'windows-latest'
+        run: .\build\Release\ply2gltf.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.binary_path }}
